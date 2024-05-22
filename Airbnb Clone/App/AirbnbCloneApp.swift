@@ -8,10 +8,10 @@
 import SwiftUI
 
 @main
-struct Airbnb_CloneApp: App {
+struct AirbnbCloneApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView()
         }
     }
 }
