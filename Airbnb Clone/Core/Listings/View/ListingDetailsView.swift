@@ -16,7 +16,7 @@ struct ListingDetailsView: View {
                 ListingImageCarouselView()
                     .frame(height: 320)
                 
-                Button{
+                Button {
                     dismiss()
                 } label: {
                     Image(systemName: "chevron.left")
@@ -169,6 +169,7 @@ struct ListingDetailsView: View {
             }
             .padding()
         }
+        .toolbar(.hidden, for: .tabBar)  // this is to not show tabBar(main tabbar) when you are inside listing details, becuase you already have a bar below 
         .ignoresSafeArea() // this will make screen go over the notch above
         .padding(.bottom, 64)
         .overlay(alignment: .bottom) {
