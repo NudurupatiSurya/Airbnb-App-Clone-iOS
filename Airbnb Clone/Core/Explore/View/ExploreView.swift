@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ExploreView: View {
     @State private var showDestinationSearchView = false
+    @StateObject var viewModel = ExploreViewModel(service: ExploreService())
     
     var body: some View {
         NavigationStack {
@@ -24,9 +25,9 @@ struct ExploreView: View {
                             }
                         } // if you want to stick the search bar at top, you can put this outside scrollView in a VStack
                     LazyVStack(spacing: 32) {
-                        ForEach (0 ... 10, id: \.self) { listing in
+                        ForEach (viewModel.listings, id: \.self) { listing in
                             NavigationLink(value: listing, label: {
-                                ListingItemView()
+                                ListingItemView(listing: listing)
                                     .frame(height: 400)
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                             })
@@ -34,8 +35,8 @@ struct ExploreView: View {
                     }
                     .padding()
                 }
-                .navigationDestination(for: Int.self) { listing in
-                    ListingDetailsView()
+                .navigationDestination(for: Listing.self) { listing in
+                    ListingDetailsView(listing: listing)
                         .navigationBarBackButtonHidden() // this will hide the nav_bar, because we ignored safe spaced before it will make sure there is no nav bar which will overlay on top of our content
                 }
             }
