@@ -15,7 +15,7 @@ enum DestinationSearchOptions {
 
 struct DestinationSearchView: View {
     @Binding var show: Bool
-    @State private var destination = ""
+    @ObservedObject var viewModel: ExploreViewModel
     @State private var selectedOption: DestinationSearchOptions = .location // initially it is set to location
     @State private var startDate = Date()
     @State private var endDate = Date()
@@ -25,6 +25,7 @@ struct DestinationSearchView: View {
             HStack {
                     Button {
                         withAnimation(.snappy){
+                            viewModel.updateListingsForLocation()
                             show.toggle()
                         }
                     } label: {
@@ -34,9 +35,10 @@ struct DestinationSearchView: View {
                 }
                 
                 Spacer()
-                if !destination.isEmpty { // show the clear button only when the textField is not empty
+                if !viewModel.searchLocation.isEmpty { // show the clear button only when the textField is not empty
                         Button("Clear") {
-                            destination = ""
+                            viewModel.searchLocation = ""
+                            viewModel.updateListingsForLocation()
                         }
                         .foregroundStyle(.black)
                         .font(.subheadline)
@@ -56,8 +58,12 @@ struct DestinationSearchView: View {
                         Image(systemName: "magnifyingglass")
                             .imageScale(.small)
                         
-                        TextField("Search Destinations", text: $destination)
+                        TextField("Search Destinations", text: $viewModel.searchLocation)
                             .font(.subheadline)
+                            .onSubmit {
+                                viewModel.updateListingsForLocation()
+                                show.toggle()
+                            }
                     }
                     .frame(height: 44)
                     .padding(.horizontal)
@@ -133,7 +139,7 @@ struct DestinationSearchView: View {
 }
 
 #Preview {
-    DestinationSearchView(show: .constant(false))
+    DestinationSearchView(show: .constant(false), viewModel: ExploreViewModel(service: ExploreService()))
 }
 
 struct CollapsableDestinationViewModifier: ViewModifier { // custom modifier you can use this to reduce copy and pasted code by reusing this
